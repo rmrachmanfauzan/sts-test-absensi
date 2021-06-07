@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post" action="/app/register">
+        {% csrf_token %}
+        {% for field in form %}
+        <label >{{ field.label_tag }}</label>
+        <br>
+        {{ field }}
+        <br>
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+
+        <!-- {{ form.as_p }} -->
+        <!-- <div class="">
+            <label for="email">Email</label>
+            <br>
+            <input class="form-control" name="email" type="text" placeholder="email">
+        </div>
+        <br>
+        <div class="">
+            <label for="email">Password</label>
+            <input class="form-control" name="passsword"type="text" placeholder="password">
+        </div>
+
+        <br> -->
+        <button type="submit" name="register" class="btn btn-primary btn-block">Sign Up</button>
+        <a href="/app/login">Login Here!</a>
+    </form>
+{% endblock  %}

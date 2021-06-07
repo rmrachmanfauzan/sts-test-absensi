@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        
+        <div class="container">
+            <div class="row">
+              <div class="col">
+                Hi {{ user }}
+              </div>
+              <div class="col">
+                <a href="{% url 'absenapp:logout' %}">logout</a>
+              </div>
+            </div>
+        </div>
+        {% if user.absen.absen_in == None or user.absen.absen_out != None %}
+            <a href="{% url 'absenapp:checkin'%}" type="button" class="btn btn-success">Check In</a>
+        {% else %}
+            Check in : {{user.absen.absen_in}}
+            <br>
+            <a href="{% url 'absenapp:checkout' user.absen.id  %}" type="button"class="btn btn-danger">Check Out</a>
+        {% endif %}
+        <div class="container">
+        <form action="">
+            <div class="row">
+                <div class="col">
+                    <input type='text' class="form-control" id='date_start' placeholder="Start Date" name="date_start"/>
+                </div>
+                <div class="col">
+                    <input type='text' class="form-control" id='date_end' placeholder="End Date" name="date_end"/>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success" type="submit">Find</button>
+                    <a href="{% url 'absenapp:index' %}" type="button"class="btn btn-danger">Reset</a>
+                </div>
+            </div>
+        </form>
+        </div>
+        
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Tanggal</th>
+                <th scope="col">Absen In</th>
+                <th scope="col">Absen Out</th>
+                <th scope="col">Lama Kerja</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for data in datas %}
+                    <tr>
+                        <th scope="row">{{data.user.get_full_name}}</th>
+                        <td>{{data.tanggal|date:'d M Y'}}</td>
+                        <td>{{data.absen_in|date:'h:i'}}</td>
+                        <td>{{data.absen_out|date:'h:i'}}</td>
+                        <td>{{data.absen_out|timeuntil:data.absen_in}}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <th>No Data</th>
+                    </tr>
+                   
+                {% endfor %} 
+            </tbody>
+        </table>
+
+    {% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'absenapp:login' %}">Login</a>
+    </br>
+    <a href="{% url 'absenapp:register' %}">Sign Up</a>
+    {% endif %}
+
+    
+    <script type="text/javascript">
+        $(function () {
+            $('#date_start').datetimepicker({
+                format: 'YYYY-MM-DD'
+            });
+            $('#date_end').datetimepicker({
+                format: 'YYYY-MM-DD'
+            });
+        });
+     </script>
+    
+{% endblock content %}
